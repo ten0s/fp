@@ -2,28 +2,37 @@
 
 -export([
     id/1,
+    compose/1,
 
     tap/1,
     tap/2,
 
     map/1,
     map/2,
+
     chain/1,
     chain/2,
+
     fold/1,
     fold/2,
 
-    do/1,
-    do/2
+    do/2,
+    do/3
 ]).
 
 -export_type([
     monad/1
 ]).
 
--type monad(T) :: identity:identity(T).
+-type monad(T) :: identity:type(T)
+                | error_m:type(T).
 
 id(X) -> X.
+
+compose(Funs) ->
+    fun (In) ->
+        lists:foldr(fun (Fun, Acc) -> Fun(Acc) end, In, Funs)
+    end.
 
 tap(Fun) -> fun (X) ->
     Fun(X),
@@ -34,9 +43,10 @@ tap(Fun, X) ->
     (tap(Fun))(X).
 
 call(What, Fun) ->
-    fun (Mon) ->
-        Mod = element(1, Mon),
-        Mod:What(Fun, Mon)
+    fun (Monad) ->
+        fun (Module) ->
+            Module:What(Fun, Monad)
+        end
     end.
 
 -spec map(fun((A) -> B)) -> fun((monad(A)) -> monad(B)).
@@ -52,28 +62,27 @@ chain(Fun) ->
     call(?FUNCTION_NAME, Fun).
 
 -spec chain(fun((A) -> B), monad(A)) -> B.
-chain(Fun, Id) ->
-    (chain(Fun))(Id).
+chain(Fun, Mon) ->
+    (chain(Fun))(Mon).
 
 -spec fold(fun((A) -> B)) -> fun((monad(A)) -> B).
 fold(Fun) ->
     call(?FUNCTION_NAME, Fun).
 
 -spec fold(fun((A) -> B), monad(A)) -> B.
-fold(Fun, Id) ->
-    (fold(Fun))(Id).
+fold(Fun, Mon) ->
+    (fold(Fun))(Mon).
 
 %-spec do([fun((A) -> B | monad(B))], A) -> B.
-do(Funs) ->
-    fun (I) ->
+do(Module, Funs) ->
+    fun (In) ->
         lists:foldl(fun
             ({What, Fun}, Acc) ->
-                Module = element(1, Acc),
                 Module:What(Fun, Acc);
             (Fun, Acc) ->
-                Fun(Acc)
-        end, I, Funs)
+                (Fun(Acc))(Module)
+        end, In, Funs)
     end.
 
-do(Funs, I) ->
-    (do(Funs))(I).
+do(Module, Funs, In) ->
+    (do(Module, Funs))(In).
