@@ -3,6 +3,7 @@
 -export([
     id/1,
     compose/1,
+    pipe/1,
 
     tap/1,
     tap/2,
@@ -32,6 +33,11 @@ id(X) -> X.
 compose(Funs) ->
     fun (In) ->
         lists:foldr(fun (Fun, Acc) -> Fun(Acc) end, In, Funs)
+    end.
+
+pipe(Funs) ->
+    fun (In) ->
+        lists:foldl(fun (Fun, Acc) -> Fun(Acc) end, In, Funs)
     end.
 
 tap(Fun) -> fun (X) ->

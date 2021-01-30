@@ -11,6 +11,7 @@ id_test() ->
 
 compose_test() ->
     %% TODO: what are compose props?
+    %% Associativity: f ⋅ g ⋅ h = (f ⋅ g) ⋅ h = f ⋅ (g ⋅ h)
     Inc = fun (X) -> X + 1 end,
     Mul = fun (X) -> fun (Y) -> X * Y end end,
     ?assertEqual(1, (compose([]))(1)),
@@ -18,6 +19,16 @@ compose_test() ->
     ?assertEqual(1, (compose([fun fp:id/1, fun fp:id/1]))(1)),
     ?assertEqual(3, (compose([Inc, Mul(2)]))(1)),
     ?assertEqual(5, (compose([Inc, Mul(2), Inc]))(1)).
+
+pipe_test() ->
+    %% TODO: what are pipe props?
+    Inc = fun (X) -> X + 1 end,
+    Mul = fun (X) -> fun (Y) -> X * Y end end,
+    ?assertEqual(1, (pipe([]))(1)),
+    ?assertEqual(1, (pipe([fun fp:id/1]))(1)),
+    ?assertEqual(1, (pipe([fun fp:id/1, fun fp:id/1]))(1)),
+    ?assertEqual(4, (pipe([Inc, Mul(2)]))(1)),
+    ?assertEqual(5, (pipe([Inc, Mul(2), Inc]))(1)).
 
 do_identity_m_1_test() ->
     In = identity_m:new("  64 "),
@@ -67,7 +78,7 @@ do_identity_4_test() ->
     ], In),
     ?assertEqual("a", Out).
 
-do_error_m_3_test() ->
+do_error_m_1_test() ->
     In = error_m:new("  64 "),
     Out = fp:do(error_m, [
         map(fun string:strip/1),
@@ -76,5 +87,17 @@ do_error_m_3_test() ->
         map(fun (N) -> [N] end),
         map(fun string:to_lower/1),
         fold({fun fp:id/1, fun fp:id/1})
+    ], In),
+    ?assertEqual("a", Out).
+
+do_maybe_m_1_test() ->
+    In = maybe_m:new("  64 "),
+    Out = fp:do(maybe_m, [
+        map(fun string:strip/1),
+        map(fun erlang:list_to_integer/1),
+        map(fun (N) -> N + 1 end),
+        map(fun (N) -> [N] end),
+        map(fun string:to_lower/1),
+        fold({fun () -> error end, fun fp:id/1})
     ], In),
     ?assertEqual("a", Out).

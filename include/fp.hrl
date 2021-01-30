@@ -4,6 +4,7 @@
 -import(fp, [
     id/1,
     compose/1,
+    pipe/1,
     tap/1,
     tap/2,
 
