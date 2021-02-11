@@ -10,6 +10,19 @@
     tap/1,
     tap/2,
 
+    if_else/1,
+    if_else/2,
+    if_else/3,
+    if_else/4,
+
+    if_then/1,
+    if_then/2,
+    if_then/3,
+
+    if_not/1,
+    if_not/2,
+    if_not/3,
+
     map/1,
     map/2,
 
@@ -48,12 +61,60 @@ pipe(Funs) ->
     end.
 
 tap(Fun) -> fun (X) ->
-    Fun(X),
-    X
+    tap(Fun, X)
 end.
 
 tap(Fun, X) ->
-    (tap(Fun))(X).
+    Fun(X),
+    X.
+
+if_else(Pred) -> fun (Then) -> fun (Else) -> fun (X) ->
+    case Pred(X) of
+    true ->
+        Then(X);
+    false ->
+        Else(X)
+    end
+end end end.
+
+if_else(Pred, Then) ->
+    (if_else(Pred))(Then).
+
+if_else(Pred, Then, Else) ->
+    (if_else(Pred, Then))(Else).
+
+if_else(Pred, Then, Else, X) ->
+    (if_else(Pred, Then, Else))(X).
+
+if_then(Pred) -> fun (Then) -> fun (X) ->
+    case Pred(X) of
+    true ->
+        Then(X);
+    false ->
+        X
+    end
+end end.
+
+if_then(Pred, Then) ->
+    (if_then(Pred))(Then).
+
+if_then(Pred, Then, X) ->
+    (if_then(Pred, Then))(X).
+
+if_not(Pred) -> fun (Fun) -> fun (X) ->
+    case not Pred(X) of
+    true ->
+        Fun(X);
+    false ->
+        X
+    end
+end end.
+
+if_not(Pred, Fun) ->
+    (if_not(Pred))(Fun).
+
+if_not(Pred, Fun, X) ->
+    (if_not(Pred, Fun))(X).
 
 call(What, Fun) ->
     fun (Monad) ->
