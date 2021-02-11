@@ -30,22 +30,22 @@ end.
 map(Fun, Monad) ->
     (map(Fun))(Monad).
 
--spec chain(fun((A) -> B)) -> fun((type(A)) -> B).
+-spec chain(fun((A) -> type(B))) -> fun((type(A)) -> type(B)).
 chain(Fun) -> fun 
     ({ok, Val}) -> Fun(Val);
     ({error, _} = Error) -> Error
 end.
 
--spec chain(fun((A) -> B), type(A)) -> B.
+-spec chain(fun((A) -> type(B)), type(A)) -> type(B).
 chain(Fun, Monad) ->
     (chain(Fun))(Monad).
 
-%-spec fold(fun((A) -> B)) -> fun((type(A)) -> B).
+-spec fold(fun((A) -> B)) -> fun((type(A)) -> B).
 fold({ErrFun, OkFun}) -> fun
     ({ok, Val}) -> OkFun(Val);
     ({error, Err}) -> ErrFun(Err)
 end.
 
-%-spec fold(fun((A) -> B), type(A)) -> B.
+-spec fold(fun((A) -> B), type(A)) -> B.
 fold({ErrFun, OkFun}, Monad) ->
     (fold({ErrFun, OkFun}))(Monad).
