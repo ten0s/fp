@@ -28,7 +28,12 @@
 -type monad(T) :: identity:type(T)
                 | error_m:type(T).
 
+-spec id(A) -> A.
 id(X) -> X.
+
+-spec cons(A, [A]) -> [A].
+cons(X, Xs) ->
+    [X | Xs].
 
 compose(Funs) ->
     fun (In) ->

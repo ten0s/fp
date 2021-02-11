@@ -9,6 +9,13 @@ id_test() ->
     ?assertEqual(one, fp:id(one)),
     ?assertEqual("one", fp:id("one")).
 
+cons_test() ->
+    Xs = [1, 2, 3, 4, 5],
+    Ys = lists:foldl(fun fp:cons/2, [], Xs),
+    Zs = lists:foldr(fun fp:cons/2, [], Xs),
+    ?assertEqual(lists:reverse(Xs), Ys),
+    ?assertEqual(Xs, Zs).
+
 compose_test() ->
     %% TODO: what are compose props?
     %% Associativity: f ⋅ g ⋅ h = (f ⋅ g) ⋅ h = f ⋅ (g ⋅ h)
