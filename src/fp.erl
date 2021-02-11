@@ -2,6 +2,8 @@
 
 -export([
     id/1,
+    cons/2,
+
     compose/1,
     pipe/1,
 
