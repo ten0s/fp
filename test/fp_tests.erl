@@ -44,7 +44,7 @@ do_identity_m_1_test() ->
         fun (I) -> fp:map(fun erlang:list_to_integer/1, I) end,
         fun (I) -> fp:map(fun (N) -> N + 1 end, I) end,
         fun (I) -> fp:map(fun (N) -> [N] end, I) end,
-        fun (I) -> fp:map(fun string:to_lower/1, I) end,
+        fun (I) -> fp:chain(compose([fun identity_m:new/1, fun string:to_lower/1]), I) end,
         fun (I) -> fp:fold(fun fp:id/1, I) end
     ], In),
     ?assertEqual("a", Out).
@@ -56,7 +56,7 @@ do_identity_m_2_test() ->
         fp:map(fun erlang:list_to_integer/1),
         fp:map(fun (N) -> N + 1 end),
         fp:map(fun (N) -> [N] end),
-        fp:map(fun string:to_lower/1),
+        fp:chain(compose([fun identity_m:new/1, fun string:to_lower/1])),
         fp:fold(fun fp:id/1)
     ], In),
     ?assertEqual("a", Out).
@@ -68,7 +68,7 @@ do_identity_3_test() ->
         map(fun erlang:list_to_integer/1),
         map(fun (N) -> N + 1 end),
         map(fun (N) -> [N] end),
-        map(fun string:to_lower/1),
+        chain(compose([fun identity_m:new/1, fun string:to_lower/1])),
         fold(fun fp:id/1)
     ], In),
     ?assertEqual("a", Out).
@@ -80,7 +80,7 @@ do_identity_4_test() ->
         {map, fun erlang:list_to_integer/1},
         {map, fun (N) -> N + 1 end},
         {map, fun (N) -> [N] end},
-        {map, fun string:to_lower/1},
+        {chain, compose([fun identity_m:new/1, fun string:to_lower/1])},
         {fold, fun fp:id/1}
     ], In),
     ?assertEqual("a", Out).
@@ -92,7 +92,7 @@ do_error_m_1_test() ->
         map(fun erlang:list_to_integer/1),
         map(fun (N) -> N + 1 end),
         map(fun (N) -> [N] end),
-        map(fun string:to_lower/1),
+        chain(compose([fun error_m:new/1, fun string:to_lower/1])),
         fold({fun fp:id/1, fun fp:id/1})
     ], In),
     ?assertEqual("a", Out).
@@ -104,7 +104,7 @@ do_maybe_m_1_test() ->
         map(fun erlang:list_to_integer/1),
         map(fun (N) -> N + 1 end),
         map(fun (N) -> [N] end),
-        map(fun string:to_lower/1),
+        chain(compose([fun maybe_m:new/1, fun string:to_lower/1])),
         fold({fun () -> error end, fun fp:id/1})
     ], In),
     ?assertEqual("a", Out).
