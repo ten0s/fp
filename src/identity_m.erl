@@ -14,32 +14,35 @@
     type/1
 ]).
 
--opaque type(T) :: T.
+-opaque type(T) :: {T}.
 
 -spec new(T) -> type(T).
 new(Val) ->
-    Val.
+    {Val}.
 
 -spec map(fun((A) -> B)) -> fun((type(A)) -> type(B)).
-map(Fun) ->
-    Fun.
+map(Fun) -> fun (Mon) ->
+    map(Fun, Mon)
+end.
 
 -spec map(fun((A) -> B), type(A)) -> type(B).
-map(Fun, Id) ->
-    (map(Fun))(Id).
+map(Fun, {Val}) ->
+    {Fun(Val)}.
 
--spec chain(fun((A) -> B)) -> fun((type(A)) -> B).
-chain(Fun) ->
-    Fun.
+-spec chain(fun((A) -> type(B))) -> fun((type(A)) -> type(B)).
+chain(Fun) -> fun (Mon) ->
+    chain(Fun, Mon)
+end.
 
--spec chain(fun((A) -> B), type(A)) -> B.
-chain(Fun, Id) ->
-    (chain(Fun))(Id).
+-spec chain(fun((A) -> type(B)), type(A)) -> type(B).
+chain(Fun, {Val}) ->
+    Fun(Val).
 
 -spec fold(fun((A) -> B)) -> fun((type(A)) -> B).
-fold(Fun) ->
-    Fun.
+fold(Fun) -> fun (Mon) ->
+    fold(Fun, Mon)
+end.
 
 -spec fold(fun((A) -> B), type(A)) -> B.
-fold(Fun, Id) ->
-    (fold(Fun))(Id).
+fold(Fun, {Val}) ->
+    Fun(Val).

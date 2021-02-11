@@ -44,7 +44,7 @@ do_identity_m_1_test() ->
         fun (I) -> fp:map(fun erlang:list_to_integer/1, I) end,
         fun (I) -> fp:map(fun (N) -> N + 1 end, I) end,
         fun (I) -> fp:map(fun (N) -> [N] end, I) end,
-        fun (I) -> fp:chain(fun string:to_lower/1, I) end,
+        fun (I) -> fp:map(fun string:to_lower/1, I) end,
         fun (I) -> fp:fold(fun fp:id/1, I) end
     ], In),
     ?assertEqual("a", Out).
@@ -56,7 +56,7 @@ do_identity_m_2_test() ->
         fp:map(fun erlang:list_to_integer/1),
         fp:map(fun (N) -> N + 1 end),
         fp:map(fun (N) -> [N] end),
-        fp:chain(fun string:to_lower/1),
+        fp:map(fun string:to_lower/1),
         fp:fold(fun fp:id/1)
     ], In),
     ?assertEqual("a", Out).
@@ -68,7 +68,7 @@ do_identity_3_test() ->
         map(fun erlang:list_to_integer/1),
         map(fun (N) -> N + 1 end),
         map(fun (N) -> [N] end),
-        chain(fun string:to_lower/1),
+        map(fun string:to_lower/1),
         fold(fun fp:id/1)
     ], In),
     ?assertEqual("a", Out).
@@ -80,7 +80,7 @@ do_identity_4_test() ->
         {map, fun erlang:list_to_integer/1},
         {map, fun (N) -> N + 1 end},
         {map, fun (N) -> [N] end},
-        {chain, fun string:to_lower/1},
+        {map, fun string:to_lower/1},
         {fold, fun fp:id/1}
     ], In),
     ?assertEqual("a", Out).
