@@ -61,10 +61,12 @@ pipe(Funs) ->
         lists:foldl(fun (Fun, Acc) -> Fun(Acc) end, In, Funs)
     end.
 
+-spec tap(fun((A) -> _)) -> fun((A) -> A).
 tap(Fun) -> fun (X) ->
     tap(Fun, X)
 end.
 
+-spec tap(fun((A) -> _), A) -> A.
 tap(Fun, X) ->
     Fun(X),
     X.
