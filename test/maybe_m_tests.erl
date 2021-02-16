@@ -16,7 +16,7 @@ ok_test() ->
 error_test() ->
     I0 = maybe_m:new("  64 "),
     I1 = maybe_m:map(fun string:strip/1, I0),
-    I2 = maybe_m:chain(fun (_) -> error end, I1),
+    I2 = maybe_m:chain(fun (_) -> nothing end, I1),
     I3 = maybe_m:map(fun (N) -> N + 1 end, I2),
     I4 = maybe_m:map(fun (N) -> [N] end, I3),
     I5 = maybe_m:map(fun string:to_lower/1, I4),

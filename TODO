@@ -1,1 +1,8 @@
 * Rename new to of?
+* Each monad must have unique container(s)
+  error_m: {ok, _} | {error, _}
+  maybe_m: {just, _} | nothing
+  either_m: {left, _} | {right, _}
+  identity_m: {}
+* Have a compiled map of {ok, '_'} | {error, '_'} and identity what module to
+  redirect the call to.

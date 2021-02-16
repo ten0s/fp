@@ -14,19 +14,20 @@
     type/1
 ]).
 
--opaque type(T) :: {ok, T}    | error
-                 | {value, T} | false.
+%% TBD: It's pretty much acceptable to also use
+%% {ok, T} | error and {value, T} | false here
+%% as long as the monad is unchanged
+
+-opaque type(T) :: {just, T}  | nothing.
 
 -spec new(T) -> type(T).
 new(Val) ->
-    {ok, Val}.
+    {just, Val}.
 
 -spec map(fun((A) -> B)) -> fun((type(A)) -> type(B)).
 map(Fun) -> fun
-    ({ok, Val})    -> {ok, Fun(Val)};
-    ({value, Val}) -> {ok, Fun(Val)};
-    (error)        -> error;
-    (false)        -> false
+    ({just, Val}) -> {just, Fun(Val)};
+    (nothing)     -> nothing
 end.
 
 -spec map(fun((A) -> B), type(A)) -> type(B).
@@ -35,10 +36,8 @@ map(Fun, Monad) ->
 
 -spec chain(fun((A) -> type(B))) -> fun((type(A)) -> type(B)).
 chain(Fun) -> fun 
-    ({ok, Val})    -> Fun(Val);
-    ({value, Val}) -> Fun(Val);
-    (error)        -> error;
-    (false)        -> false
+    ({just, Val})  -> Fun(Val);
+    (nothing)      -> nothing
 end.
 
 -spec chain(fun((A) -> type(B)), type(A)) -> type(B).
@@ -46,13 +45,11 @@ chain(Fun, Monad) ->
     (chain(Fun))(Monad).
 
 -spec fold(fun((A) -> B)) -> fun((type(A)) -> B).
-fold({ErrFun, OkFun}) -> fun
-    ({ok, Val})    -> OkFun(Val);
-    ({value, Val}) -> OkFun(Val);
-    (error)        -> ErrFun();
-    (false)        -> ErrFun()
+fold({NothingFun, JustFun}) -> fun
+    ({just, Val}) -> JustFun(Val);
+    (nothing)     -> NothingFun()
 end.
 
 -spec fold(fun((A) -> B), type(A)) -> B.
-fold({ErrFun, OkFun}, Monad) ->
-    (fold({ErrFun, OkFun}))(Monad).
+fold({NothingFun, JustFun}, Monad) ->
+    (fold({NothingFun, JustFun}))(Monad).
