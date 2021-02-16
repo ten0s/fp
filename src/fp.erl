@@ -9,6 +9,7 @@
 
     tap/1,
     tap/2,
+    flip/1,
 
     if_else/1,
     if_else/2,
@@ -67,6 +68,11 @@ end.
 tap(Fun, X) ->
     Fun(X),
     X.
+
+-spec flip(fun((A, B) -> C)) -> fun((B, A) -> C).
+flip(Fun) -> fun (X, Y) ->
+    Fun(Y, X)
+end.
 
 if_else(Pred) -> fun (Then) -> fun (Else) -> fun (X) ->
     case Pred(X) of

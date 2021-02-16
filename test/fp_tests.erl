@@ -27,6 +27,10 @@ compose_test() ->
     ?assertEqual(3, (compose([Inc, Mul(2)]))(1)),
     ?assertEqual(5, (compose([Inc, Mul(2), Inc]))(1)).
 
+flip_test() ->
+    ?assertEqual("B->A", (fp:flip(fun (A, B) -> A ++ "->" ++ B end))("A", "B")),
+    ?assertEqual(2.0, (fp:flip(fun erlang:'/'/2))(1, 2)).
+
 pipe_test() ->
     %% TODO: what are pipe props?
     Inc = fun (X) -> X + 1 end,
