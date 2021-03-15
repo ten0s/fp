@@ -1,4 +1,6 @@
--module(maybe_m).
+-module(maybe).
+
+-behaviour(functor).
 
 -export([
     new/1,
@@ -14,11 +16,7 @@
     type/1
 ]).
 
-%% TBD: It's pretty much acceptable to also use
-%% {ok, T} | error and {value, T} | false here
-%% as long as the monad is unchanged
-
--opaque type(T) :: {just, T}  | nothing.
+-opaque type(T) :: {just, T} | nothing.
 
 -spec new(T) -> type(T).
 new(Val) ->
@@ -44,12 +42,12 @@ end.
 chain(Fun, Monad) ->
     (chain(Fun))(Monad).
 
--spec fold(fun((A) -> B)) -> fun((type(A)) -> B).
+-spec fold({fun(() -> B), fun((A) -> B)}) -> fun((type(A)) -> B).
 fold({NothingFun, JustFun}) -> fun
     ({just, Val}) -> JustFun(Val);
     (nothing)     -> NothingFun()
 end.
 
--spec fold(fun((A) -> B), type(A)) -> B.
+-spec fold({fun(() -> B), fun((A) -> B)}, type(A)) -> B.
 fold({NothingFun, JustFun}, Monad) ->
     (fold({NothingFun, JustFun}))(Monad).

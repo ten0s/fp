@@ -1,4 +1,6 @@
--module(identity_m).
+-module(identity).
+
+-behaviour(functor).
 
 -export([
     new/1,

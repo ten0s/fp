@@ -1,4 +1,6 @@
--module(error_m).
+-module(result).
+
+-behaviour(functor).
 
 -export([
     new/1,

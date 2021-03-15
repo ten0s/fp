@@ -38,11 +38,10 @@
 ]).
 
 -export_type([
-    monad/1
+    type/1
 ]).
 
--type monad(T) :: identity:type(T)
-                | error_m:type(T).
+-type type(_T) :: any().
 
 -spec id(A) -> A.
 id(X) -> X.
@@ -125,37 +124,37 @@ if_not(Pred, Fun, X) ->
     (if_not(Pred, Fun))(X).
 
 call(What, Fun) ->
-    fun (Monad) ->
+    fun (Type) ->
         fun (Module) ->
-            Module:What(Fun, Monad)
+            Module:What(Fun, Type)
         end
     end.
 
--spec map(fun((A) -> B)) -> fun((monad(A)) -> monad(B)).
+-spec map(fun((A) -> B)) -> fun((type(A)) -> type(B)).
 map(Fun) ->
     call(?FUNCTION_NAME, Fun).
     
--spec map(fun((A) -> B), monad(A)) -> monad(B).
+-spec map(fun((A) -> B), type(A)) -> type(B).
 map(Fun, Mon) ->
     (map(Fun))(Mon).
 
--spec chain(fun((A) -> B)) -> fun((monad(A)) -> B).
+-spec chain(fun((A) -> B)) -> fun((type(A)) -> B).
 chain(Fun) ->
     call(?FUNCTION_NAME, Fun).
 
--spec chain(fun((A) -> B), monad(A)) -> B.
+-spec chain(fun((A) -> B), type(A)) -> B.
 chain(Fun, Mon) ->
     (chain(Fun))(Mon).
 
--spec fold(fun((A) -> B)) -> fun((monad(A)) -> B).
+%-spec fold(fun((A) -> B)) -> fun((type(A)) -> B).
 fold(Fun) ->
     call(?FUNCTION_NAME, Fun).
 
--spec fold(fun((A) -> B), monad(A)) -> B.
+%-spec fold(fun((A) -> B), type(A)) -> B.
 fold(Fun, Mon) ->
     (fold(Fun))(Mon).
 
-%-spec do([fun((A) -> B | monad(B))], A) -> B.
+%-spec do([fun((A) -> B | type(B))], A) -> B.
 do(Module, Funs) ->
     fun (In) ->
         lists:foldl(fun

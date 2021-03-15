@@ -1,8 +1,16 @@
 * Rename new to of?
-* Each monad must have unique container(s)
-  error_m: {ok, _} | {error, _}
-  maybe_m: {just, _} | nothing
-  either_m: {left, _} | {right, _}
-  identity_m: {}
 * Have a compiled map of {ok, '_'} | {error, '_'} and identity what module to
   redirect the call to.
+* Define behaviours like:
+  1. 'functor' with map/1
+  1.1. 'bifunctor' with bimap/2 https://typelevel.org/cats/typeclasses/bifunctor.html
+  2. 'extract' with extract/0
+  3. 'monad' with chain/1, ...
+  4. '???'   with fold/?
+  5. 'pointed' with of/1
+  6. 'contrafunctor' with contramap/1
+  7. 'profunctor' with dimap/2
+  8. '???' with bimap/2
+  9. 'show' with show/1
+  10. 'eq' with eq/??
+  11. 'ord' with ?
