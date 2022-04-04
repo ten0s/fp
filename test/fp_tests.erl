@@ -3,6 +3,28 @@
 -include_lib("eunit/include/eunit.hrl").
 -include("fp.hrl").
 
+%% identity_law_test_() ->
+%%     %% fmap id = id
+%%     Map = erlz:curried(fun map/2),
+%%     Func1 = {value, 1},
+%%     Func2 = {list, [{value, 1}, {value, 2}]},
+%%     [
+%%         ?_assertEqual((Map(fun id/1))(Func1), id(Func1)),
+%%         ?_assertEqual((Map(fun id/1))(Func2), id(Func2))
+%%     ].
+
+%% composition_law_test_() ->
+%%     %% fmap (f . g)  ==  fmap f . fmap g
+%%     Map = erlz:curried(fun map/2),
+%%     F = fun (X) -> X + 1 end,
+%%     G = fun (X) -> 2 * X end,
+%%     Func1 = {value, 1},
+%%     Func2 = {list, [{value, 1}, {value, 2}]},
+%%     [
+%%         ?_assertEqual((Map(compose(F, G)))(Func1), (compose(Map(F), Map(G)))(Func1)),
+%%         ?_assertEqual((Map(compose(F, G)))(Func2), (compose(Map(F), Map(G)))(Func2))
+%%     ].
+
 id_test() ->
     %% TODO: forall x: x = id(x)
     ?assertEqual(1, fp:id(1)),

@@ -14,3 +14,8 @@
   9. 'show' with show/1
   10. 'eq' with eq/??
   11. 'ord' with ?
+
+instance Bifunctor Either where
+    bimap f g (Left x) = Left (f x)
+    bimap f g (Right y) = Right (g y)
+    
